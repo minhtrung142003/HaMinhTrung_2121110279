@@ -1,0 +1,10 @@
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\HaMinhTrung_0279.exe.config
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\HaMinhTrung_0279.exe
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\HaMinhTrung_0279.pdb
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.csproj.AssemblyReference.cache
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.Properties.Resources.resources
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.csproj.GenerateResource.cache
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.csproj.CoreCompileInputs.cache
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.exe
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.pdb
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.Form1.resources
