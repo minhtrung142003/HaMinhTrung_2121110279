@@ -85,10 +85,10 @@
             // txtxeploai
             // 
             this.txtxeploai.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.txtxeploai.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtxeploai.Location = new System.Drawing.Point(904, 71);
+            this.txtxeploai.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtxeploai.Location = new System.Drawing.Point(893, 79);
             this.txtxeploai.Name = "txtxeploai";
-            this.txtxeploai.Size = new System.Drawing.Size(80, 38);
+            this.txtxeploai.Size = new System.Drawing.Size(132, 30);
             this.txtxeploai.TabIndex = 11;
             // 
             // label7
@@ -107,6 +107,7 @@
             this.txtdiem.Name = "txtdiem";
             this.txtdiem.Size = new System.Drawing.Size(57, 30);
             this.txtdiem.TabIndex = 9;
+            this.txtdiem.TextChanged += new System.EventHandler(this.txtdiem_TextChanged);
             // 
             // label6
             // 
@@ -143,7 +144,6 @@
             this.dateNS.Name = "dateNS";
             this.dateNS.Size = new System.Drawing.Size(280, 27);
             this.dateNS.TabIndex = 5;
-            this.dateNS.ValueChanged += new System.EventHandler(this.dateNS_ValueChanged);
             // 
             // label4
             // 
@@ -159,7 +159,7 @@
             // 
             this.txtTen.Location = new System.Drawing.Point(161, 134);
             this.txtTen.Name = "txtTen";
-            this.txtTen.Size = new System.Drawing.Size(189, 30);
+            this.txtTen.Size = new System.Drawing.Size(217, 30);
             this.txtTen.TabIndex = 3;
             // 
             // label3
@@ -176,7 +176,7 @@
             // 
             this.txtId.Location = new System.Drawing.Point(161, 60);
             this.txtId.Name = "txtId";
-            this.txtId.Size = new System.Drawing.Size(189, 30);
+            this.txtId.Size = new System.Drawing.Size(217, 30);
             this.txtId.TabIndex = 1;
             // 
             // label2
@@ -227,7 +227,6 @@
             this.dgvSinhVien.Size = new System.Drawing.Size(1027, 264);
             this.dgvSinhVien.TabIndex = 0;
             this.dgvSinhVien.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSinhVien_CellClick);
-            this.dgvSinhVien.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSinhVien_CellContentClick);
             // 
             // btThem
             // 
@@ -260,6 +259,7 @@
             this.btThoat.TabIndex = 16;
             this.btThoat.Text = "Thoát";
             this.btThoat.UseVisualStyleBackColor = false;
+            this.btThoat.Click += new System.EventHandler(this.btThoat_Click);
             // 
             // btReset
             // 
@@ -270,6 +270,7 @@
             this.btReset.TabIndex = 17;
             this.btReset.Text = "Reset";
             this.btReset.UseVisualStyleBackColor = false;
+            this.btReset.Click += new System.EventHandler(this.btReset_Click);
             // 
             // btSua
             // 
@@ -286,27 +287,31 @@
             // 
             this.Column1.DataPropertyName = "MaSV";
             this.Column1.HeaderText = "Mã sinh viên";
+            this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
-            this.Column1.Width = 180;
+            this.Column1.Width = 140;
             // 
             // Column2
             // 
             this.Column2.DataPropertyName = "TenSV";
             this.Column2.HeaderText = "Tên sinh viên";
+            this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
-            this.Column2.Width = 190;
+            this.Column2.Width = 180;
             // 
             // Column3
             // 
             this.Column3.DataPropertyName = "NgaySinh";
             this.Column3.HeaderText = "Ngày sinh";
+            this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
-            this.Column3.Width = 140;
+            this.Column3.Width = 120;
             // 
             // Column4
             // 
             this.Column4.DataPropertyName = "DiaChi";
             this.Column4.HeaderText = "Địa chỉ";
+            this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
             this.Column4.Width = 120;
             // 
@@ -314,6 +319,7 @@
             // 
             this.Column5.DataPropertyName = "Diem";
             this.Column5.HeaderText = "Điểm";
+            this.Column5.MinimumWidth = 6;
             this.Column5.Name = "Column5";
             this.Column5.Width = 60;
             // 
@@ -321,10 +327,11 @@
             // 
             this.Column6.DataPropertyName = "XepLoai";
             this.Column6.HeaderText = "Xếp loại";
+            this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
-            this.Column6.Width = 140;
+            this.Column6.Width = 190;
             // 
-            // Form1
+            // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -337,7 +344,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.Name = "GUI";
             this.Text = "QUẢN LÝ ĐIỂM SINH VIÊN ";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);

@@ -36,12 +36,14 @@ namespace HaMinhTrung_0279.DAL
             command.Parameters.Add("@DiaChi", SqlDbType.NVarChar, 50);
             command.Parameters.Add("@Diem", SqlDbType.Float);
             command.Parameters.Add("@XepLoai", SqlDbType.NVarChar, 50);
+
             command.Parameters["@MaSV"].Value = sv.MaSV1;
             command.Parameters["@TenSV"].Value = sv.TenSV1;
             command.Parameters["@NgaySinh"].Value = sv.NgaySinh1;
             command.Parameters["@DiaChi"].Value = sv.DiaChi1;
             command.Parameters["@Diem"].Value = sv.Diem1;
             command.Parameters["@XepLoai"].Value = sv.XepLoai1;
+
 
             Conn.Open();
             command.ExecuteNonQuery();
@@ -60,12 +62,14 @@ namespace HaMinhTrung_0279.DAL
             command.Parameters.Add("@DiaChi", SqlDbType.NVarChar, 50);
             command.Parameters.Add("@Diem", SqlDbType.Float);
             command.Parameters.Add("@XepLoai", SqlDbType.NVarChar, 50);
+
             command.Parameters["@MaSV"].Value = sv.MaSV1;
             command.Parameters["@TenSV"].Value = sv.TenSV1;
             command.Parameters["@NgaySinh"].Value = sv.NgaySinh1;
             command.Parameters["@DiaChi"].Value = sv.DiaChi1;
             command.Parameters["@Diem"].Value = sv.Diem1;
             command.Parameters["@XepLoai"].Value = sv.XepLoai1;
+
 
             Conn.Open();
             command.ExecuteNonQuery();

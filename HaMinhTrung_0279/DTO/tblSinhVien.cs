@@ -31,5 +31,7 @@ namespace HaMinhTrung_0279.DTO
         public string DiaChi1 { get => DiaChi; set => DiaChi = value; }
         public float Diem1 { get => Diem; set => Diem = value; }
         public string XepLoai1 { get => XepLoai; set => XepLoai = value; }
+
+
     }
 }
