@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClosedXML.Excel;
 using HaMinhTrung_0279.BLL;
 using HaMinhTrung_0279.DTO;
 namespace HaMinhTrung_0279
@@ -71,7 +72,11 @@ namespace HaMinhTrung_0279
         // Load
         private void Form1_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'doAnMonHocDataSet1.THONGTINSINHVIEN' table. You can move, or remove it, as needed.
+            this.tHONGTINSINHVIENTableAdapter1.Fill(this.doAnMonHocDataSet1.THONGTINSINHVIEN);
             dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+           
+            
         }
 
         // hàm khi click vào sẽ hiển thị được thông tin 
@@ -180,6 +185,30 @@ namespace HaMinhTrung_0279
                 // Đặt focus vào ô tên
                 txtdiem.Focus();
             }
+        }
+
+        private void btexport_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter ="Excel Workbook|*.xlsx" })
+            {
+                if(sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using(XLWorkbook workbook = new XLWorkbook())
+                        {
+                            workbook.Worksheets.Add(this.doAnMonHocDataSet1.THONGTINSINHVIEN.CopyToDataTable(), "THONGTINSINHVIEN");
+                            workbook.SaveAs(sfd.FileName);
+                        }
+                        MessageBox.Show("You have successfully exported your data to an excel file.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch( Exception ex) 
+                    {
+                        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            
         }
     }
 }
