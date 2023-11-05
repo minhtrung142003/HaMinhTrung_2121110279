@@ -13,6 +13,13 @@ namespace HaMinhTrung_0279.DAL
         {
             SqlConnection Conn = new SqlConnection("Data Source=TIEUPHU\\TIEUPHU;Initial Catalog=DoAnMonHoc;Integrated Security=True");
             return Conn;
+          
+        }
+        public string GetConnection()
+        {
+            string con = "Data Source=TIEUPHU\\TIEUPHU;Initial Catalog=DoAnMonHoc;Integrated Security=True";
+            return con;
+
         }
             
     }

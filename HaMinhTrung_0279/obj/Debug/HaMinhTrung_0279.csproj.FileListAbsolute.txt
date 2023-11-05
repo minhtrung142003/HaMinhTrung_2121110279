@@ -29,3 +29,11 @@ E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\System.Memory.xml
 E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\System.Numerics.Vectors.xml
 E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.csproj.CopyComplete
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\obj\Debug\HaMinhTrung_0279.csproj.ResolveComReference.cache
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\EPPlus.dll
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\EPPlus.Interfaces.dll
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\EPPlus.System.Drawing.dll
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\Microsoft.IO.RecyclableMemoryStream.dll
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\System.ComponentModel.Annotations.dll
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\EPPlus.xml
+E:\DOANMONHOC_C#\HaMinhTrung_0279\HaMinhTrung_0279\bin\Debug\Microsoft.IO.RecyclableMemoryStream.xml

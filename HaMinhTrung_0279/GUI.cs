@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +13,15 @@ using System.Windows.Forms;
 using ClosedXML.Excel;
 using HaMinhTrung_0279.BLL;
 using HaMinhTrung_0279.DTO;
+using excel = Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
+using System.Reflection;
+using System.ComponentModel;
+
 namespace HaMinhTrung_0279
 {
     public partial class GUI : Form
-    {
+    {       
         public GUI()
         {
             InitializeComponent();
@@ -82,7 +90,6 @@ namespace HaMinhTrung_0279
         // hàm khi click vào sẽ hiển thị được thông tin 
         private void dgvSinhVien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-
             try
             {
                  
@@ -95,11 +102,9 @@ namespace HaMinhTrung_0279
                 txtdiachi.Text = row.Cells[3].Value.ToString();
                 txtdiem.Text = row.Cells[4].Value.ToString();
                 txtxeploai.Text = row.Cells[5].Value.ToString();
-
             }
             catch { }
         }
-
         // Sửa
         private void btSua_Click(object sender, EventArgs e)
         {
@@ -107,7 +112,7 @@ namespace HaMinhTrung_0279
             {
                 if (dgvSinhVien.SelectedRows.Count > 0)
                 {
-                    int masv = int.Parse(txtId.Text);
+                 int masv = int.Parse(txtId.Text);
                 string tensv = txtTen.Text;
                 DateTime ngays = dateNS.Value;
                 string diachi = txtdiachi.Text;
@@ -186,29 +191,125 @@ namespace HaMinhTrung_0279
                 txtdiem.Focus();
             }
         }
-
+        // export
         private void btexport_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog sfd = new SaveFileDialog() { Filter ="Excel Workbook|*.xlsx" })
+            
+            DataObject copydata = dgvSinhVien.GetClipboardContent();
+            if(copydata != null) Clipboard.SetDataObject(copydata);
+            excel.Application xlapp = new excel.Application();
+            xlapp.Visible = true;
+            excel.Workbook xlWbook;
+            excel.Worksheet xlWsheet;
+            object miseddata = System.Reflection.Missing.Value;
+            xlWbook = xlapp.Workbooks.Add(miseddata);
+
+            xlWsheet = (excel.Worksheet)xlapp.Worksheets.get_Item(1);
+            excel.Range xlr = (excel.Range)xlWsheet.Cells[1, 1];
+            xlr.Select();
+            xlWsheet.PasteSpecial(xlr, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+        }
+
+        // Phương thức để truyền đường dẫn tệp vào excel
+
+        private void ImportDataFromExcel(string excelFilePath)
+        {
+           // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            try
             {
-                if(sfd.ShowDialog() == DialogResult.OK)
+                using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
                 {
-                    try
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; 
+
+                    int rowCount = worksheet.Dimension.Rows;
+                    int columnCount = worksheet.Dimension.Columns;
+
+                    DataTable dataTable = new DataTable();
+
+                    // Add columns to the DataTable
+                    for (int col = 1; col <= columnCount; col++)
                     {
-                        using(XLWorkbook workbook = new XLWorkbook())
-                        {
-                            workbook.Worksheets.Add(this.doAnMonHocDataSet1.THONGTINSINHVIEN.CopyToDataTable(), "THONGTINSINHVIEN");
-                            workbook.SaveAs(sfd.FileName);
-                        }
-                        MessageBox.Show("You have successfully exported your data to an excel file.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dataTable.Columns.Add($"Column{col}");
                     }
-                    catch( Exception ex) 
+
+                    // Add rows to the DataTable
+                    for (int row = 2; row <= rowCount; row++) // Assuming the data starts from the second row
                     {
-                        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DataRow newRow = dataTable.NewRow();
+
+                        for (int col = 1; col <= columnCount; col++)
+                        {
+                            newRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
+                        }
+
+                        dataTable.Rows.Add(newRow);
+                    }
+
+                    // Bind DataTable to DataGridView
+                    dgvSinhVien.DataSource = dataTable;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while importing data: " + ex.Message);
+            }
+        }
+
+        // import
+    
+        private void btImport_Click(object sender, EventArgs e)
+        {
+            /*OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel Files|*.xlsx;*.xls;*.csv";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string excelFilePath = openFileDialog.FileName;
+                ImportDataFromExcel(excelFilePath);
+            }*/
+
+            
+            // cách 2
+            try
+            {
+
+                if (openFD.ShowDialog() == DialogResult.OK)
+                {
+                  
+                    using (OleDbConnection myConnect = new OleDbConnection(string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 8.0;", openFD.FileName)))
+                    {
+                        openFD.Filter = "Excel Files|*.xlsx;*.xls;*.csv";
+                        DataTable dt = new DataTable();
+                        OleDbDataAdapter cmd = new OleDbDataAdapter("select * from [Sheet1$]", myConnect);
+                        cmd.Fill(dt);
+                        dgvSinhVien.DataSource = dt;
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             
+        }
+        private void btSave_Click(object sender, EventArgs e)
+        {
+          
+            
+        }
+
+        private void btBrowse_Click(object sender, EventArgs e)
+        {
+           /* OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Title = "Select File";
+            fdlg.FileName = txtTextbox.Text;
+            fdlg.Filter = "Excel Sheet (*.xlsx)|*.xlsx|All Files(*.*)|*.*";
+            fdlg.FilterIndex = 1;
+            fdlg.RestoreDirectory = true;
+            if(fdlg.ShowDialog()== DialogResult.OK)
+            {
+                txtTextbox.Text = fdlg.FileName;
+            }*/
         }
     }
 }
