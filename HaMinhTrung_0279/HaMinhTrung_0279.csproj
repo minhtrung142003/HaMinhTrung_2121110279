@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\B_SinhVien.cs" />
+    <Compile Include="Connection.cs" />
     <Compile Include="DAL\dbConnectionData.cs" />
     <Compile Include="DAL\D_SinhVien.cs" />
     <Compile Include="DoAnMonHocDataSet1.Designer.cs">
@@ -175,8 +176,20 @@
     <Compile Include="GUI.Designer.cs">
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Login.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Modify.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ĐangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ĐangNhap.Designer.cs">
+      <DependentUpon>ĐangNhap.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="GUI.resx">
       <DependentUpon>GUI.cs</DependentUpon>
     </EmbeddedResource>
@@ -189,6 +202,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ĐangNhap.resx">
+      <DependentUpon>ĐangNhap.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="DoAnMonHocDataSet1.xsc">
       <DependentUpon>DoAnMonHocDataSet1.xsd</DependentUpon>
     </None>
@@ -199,6 +215,17 @@
     </None>
     <None Include="DoAnMonHocDataSet1.xss">
       <DependentUpon>DoAnMonHocDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="Login.xsc">
+      <DependentUpon>Login.xsd</DependentUpon>
+    </None>
+    <None Include="Login.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Login.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Login.xss">
+      <DependentUpon>Login.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

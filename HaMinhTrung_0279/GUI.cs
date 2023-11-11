@@ -5,32 +5,33 @@ using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClosedXML.Excel;
+
 using HaMinhTrung_0279.BLL;
 using HaMinhTrung_0279.DTO;
+using System.IO;
 using excel = Microsoft.Office.Interop.Excel;
+using HaMinhTrung_0279.DAL;
 using OfficeOpenXml;
-using System.Reflection;
-using System.ComponentModel;
 
 namespace HaMinhTrung_0279
 {
     public partial class GUI : Form
-    {       
+    {
+        
         public GUI()
         {
             InitializeComponent();
+                
         }
-        // hàm nhập số không được nhập chữ
-        private bool IsNumeric(string value)
-        {
-            return long.TryParse(value, out long _);
-        }
+        Modify modify = new Modify();
+       DataTable dt = new DataTable("THONGTINSINHVIEN");
+       SqlConnection con;
+     
+        
 
         // Hàm nhập id đã tồn tại
         private bool IsDuplicateID(string id)
@@ -46,13 +47,17 @@ namespace HaMinhTrung_0279
         }
 
         // Thêm
+        private bool CheckTextBoxes()
+        {
+            if (txtId.Text == "") { MessageBox.Show("Vui lòng nhập đầy đủ thông tin."); return false; }
+            if (txtTen.Text == "") { MessageBox.Show("Vui lòng nhập tên."); return false; }
+            if (txtdiachi.Text == "") { MessageBox.Show("Vui lòng nhập địa chỉ."); return false; }
+            if (txtdiem.Text == "") { MessageBox.Show("Vui lòng nhập điểm."); return false; }
+            return true;
+        }
         private void btThem_Click(object sender, EventArgs e)
         {
-            if (!IsNumeric(txtId.Text))
-            {
-                MessageBox.Show("Vui lòng nhập lại ID");
-                return;
-            }
+          
             if (IsDuplicateID(txtId.Text))
             {
                 MessageBox.Show("ID đã tồn tại. Vui lòng nhập ID khác.");
@@ -60,16 +65,22 @@ namespace HaMinhTrung_0279
             }
             try
             {
-                     int masv = int.Parse(txtId.Text);
+                if (CheckTextBoxes())
+                {
+                    int masv = int.Parse(txtId.Text);
                     string tensv = txtTen.Text;
                     DateTime ngays = dateNS.Value;
                     string diachi = txtdiachi.Text;
                     float diem = float.Parse(txtdiem.Text);
                     string xeploai = txtxeploai.Text;
                     tblSinhVien sinhvien = new tblSinhVien(masv, tensv, ngays, diachi, diem, xeploai);
-                    B_SinhVien.InsertSinhVien(sinhvien);
-                    MessageBox.Show("Bạn đã thêm" + "" + " " + tensv + " " + "" + "thành công");
-                    dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+                    if (MessageBox.Show("Bạn muốn thêm vào không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        B_SinhVien.InsertSinhVien(sinhvien);
+                        MessageBox.Show("Bạn đã thêm" + "" + " " + tensv + " " + "" + "thành công");
+                        dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -80,21 +91,15 @@ namespace HaMinhTrung_0279
         // Load
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'doAnMonHocDataSet1.THONGTINSINHVIEN' table. You can move, or remove it, as needed.
-            this.tHONGTINSINHVIENTableAdapter1.Fill(this.doAnMonHocDataSet1.THONGTINSINHVIEN);
             dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
-           
-            
         }
 
         // hàm khi click vào sẽ hiển thị được thông tin 
         private void dgvSinhVien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
-            {
-                 
+            {               
                 DataGridViewRow row = new DataGridViewRow();
-
                 row = dgvSinhVien.Rows[e.RowIndex];
                 txtId.Text = row.Cells[0].Value.ToString();
                 txtTen.Text = row.Cells[1].Value.ToString();
@@ -105,6 +110,7 @@ namespace HaMinhTrung_0279
             }
             catch { }
         }
+
         // Sửa
         private void btSua_Click(object sender, EventArgs e)
         {
@@ -112,23 +118,30 @@ namespace HaMinhTrung_0279
             {
                 if (dgvSinhVien.SelectedRows.Count > 0)
                 {
-                 int masv = int.Parse(txtId.Text);
-                string tensv = txtTen.Text;
-                DateTime ngays = dateNS.Value;
-                string diachi = txtdiachi.Text;
-                float diem = float.Parse(txtdiem.Text);
-                string xeploai = txtxeploai.Text;
-                tblSinhVien sinhvien = new tblSinhVien(masv, tensv, ngays, diachi, diem, xeploai);
-                B_SinhVien.UpdateSinhVien(sinhvien);
-                MessageBox.Show("Bạn đã sửa" + " " + tensv + " " + "thành công");
-                dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+                    int masv = int.Parse(txtId.Text);
+
+                    // Kiểm tra nếu người dùng đã sửa trường ID
+                    if (masv != int.Parse(dgvSinhVien.SelectedRows[0].Cells[0].Value.ToString()))
+                    {
+                        MessageBox.Show("Không được sửa ID của sinh viên.");
+                        return;
+                    }
+
+                    string tensv = txtTen.Text;
+                    DateTime ngays = dateNS.Value;
+                    string diachi = txtdiachi.Text;
+                    float diem = float.Parse(txtdiem.Text);
+                    string xeploai = txtxeploai.Text;
+                    tblSinhVien sinhvien = new tblSinhVien(masv, tensv, ngays, diachi, diem, xeploai);
+                    B_SinhVien.UpdateSinhVien(sinhvien); // gọi phương thức update từ class b_sinhvien
+                    MessageBox.Show("Bạn đã sửa" + " " + tensv + " " + "thành công");
+                    dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien(); // gán dữ liệu cho thuộc tính datasource
                 }
                 else
                 {
                     MessageBox.Show("Chọn một sinh viên để sửa.");
                 }
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -148,15 +161,18 @@ namespace HaMinhTrung_0279
                     float diem = float.Parse(txtdiem.Text);
                     string xeploai = txtxeploai.Text;
                     tblSinhVien sinhvien = new tblSinhVien(masv, tensv, ngays, diachi, diem, xeploai);
-                    B_SinhVien.DeleteSinhVien(masv);
-                    MessageBox.Show("Bạn đã xóa" + "" + tensv + " " + "thành công");
-                    dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+                    DialogResult result = MessageBox.Show("Bạn có muốn xóa không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (result == DialogResult.Yes)
+                    {
+                        B_SinhVien.DeleteSinhVien(masv);
+                        MessageBox.Show("Bạn đã xóa " + tensv + " thành công");
+                        dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
+                    }
                 }
                 else
                 {
                     MessageBox.Show("Chọn một sinh viên để xóa.");
                 }
-
             }
             catch (Exception ex)
             {
@@ -181,135 +197,124 @@ namespace HaMinhTrung_0279
             this.Close();
         }
 
+        // HÀM chỉ được nhập số, không được nhập chữ
         private void txtdiem_TextChanged(object sender, EventArgs e)
         {
-            if (!txtdiem.Text.All(Char.IsDigit))
+            float diem;
+            if (!string.IsNullOrEmpty(txtdiem.Text))
             {
-                // Hiển thị thông báo lỗi
-                MessageBox.Show("Vui lòng nhập lại Điểm");
-                // Đặt focus vào ô tên
-                txtdiem.Focus();
+                if (!float.TryParse(txtdiem.Text, out diem))
+                {
+                    MessageBox.Show("Vui lòng nhập lại Điểm");
+                    txtdiem.Focus();
+                    return;
+                }
+            }
+            else
+            {
+                diem = 0; // Gán giá trị mặc định nếu không có giá trị nhập vào
+            }
+
+            // Kiểm tra điều kiện
+            if (diem < 0 || diem > 10)
+            {
+                MessageBox.Show("Vui lòng nhập lại điểm! Điểm phải nằm trong khoảng từ 0 đến 10.");
             }
         }
-        // export
-        private void btexport_Click(object sender, EventArgs e)
+
+        // HÀM chỉ được nhập số, không được nhập chữ
+        private void txtId_TextChanged(object sender, EventArgs e)
+        {
+            if (!txtId.Text.All(Char.IsDigit))
+            {
+                // Hiển thị thông báo lỗi
+                MessageBox.Show("Vui lòng nhập lại ID");
+                // Đặt focus vào ô
+                txtId.Focus();
+            }
+        }
+
+        // Export excel
+        // dùng để copy nội dung từ datagirdview vào clipboard 
+        private void btExport_Click(object sender, EventArgs e)
         {
             
             DataObject copydata = dgvSinhVien.GetClipboardContent();
-            if(copydata != null) Clipboard.SetDataObject(copydata);
+            if (copydata != null) Clipboard.SetDataObject(copydata);
             excel.Application xlapp = new excel.Application();
             xlapp.Visible = true;
-            excel.Workbook xlWbook;
-            excel.Worksheet xlWsheet;
-            object miseddata = System.Reflection.Missing.Value;
-            xlWbook = xlapp.Workbooks.Add(miseddata);
+            excel.Workbook xlWbook;  // khai báo biến xlWbook để đại diện cho workbook
+            excel.Worksheet xlWsheet; // khai báo biến xlwsheet để đại diện cho worksheet
+            object miseddata = System.Reflection.Missing.Value; // tạo 1 đối tượng miseddata và gán giá trị
+            xlWbook = xlapp.Workbooks.Add(miseddata); // tạo 1 workbook new
 
             xlWsheet = (excel.Worksheet)xlapp.Worksheets.get_Item(1);
             excel.Range xlr = (excel.Range)xlWsheet.Cells[1, 1];
             xlr.Select();
             xlWsheet.PasteSpecial(xlr, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+
         }
+        // Import excel 
 
-        // Phương thức để truyền đường dẫn tệp vào excel
-
-        private void ImportDataFromExcel(string excelFilePath)
+        private void ImportExcel(String path)
         {
-           // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            try
+            using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
             {
-                using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
+                ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[0]; 
+                DataTable dataTable = new DataTable();
+                for (int i = excelWorksheet.Dimension.Start.Column; i <= excelWorksheet.Dimension.End.Column; i++)
                 {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; 
-
-                    int rowCount = worksheet.Dimension.Rows;
-                    int columnCount = worksheet.Dimension.Columns;
-
-                    DataTable dataTable = new DataTable();
-
-                    // Add columns to the DataTable
-                    for (int col = 1; col <= columnCount; col++)
-                    {
-                        dataTable.Columns.Add($"Column{col}");
-                    }
-
-                    // Add rows to the DataTable
-                    for (int row = 2; row <= rowCount; row++) // Assuming the data starts from the second row
-                    {
-                        DataRow newRow = dataTable.NewRow();
-
-                        for (int col = 1; col <= columnCount; col++)
-                        {
-                            newRow[col - 1] = worksheet.Cells[row, col].Value?.ToString();
-                        }
-
-                        dataTable.Rows.Add(newRow);
-                    }
-
-                    // Bind DataTable to DataGridView
-                    dgvSinhVien.DataSource = dataTable;
+                    dataTable.Columns.Add(excelWorksheet.Cells[1, i].Value.ToString());
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error while importing data: " + ex.Message);
+                for (int i = excelWorksheet.Dimension.Start.Row + 1; i <= excelWorksheet.Dimension.End.Row; i++)
+                {
+                    List<string> listRows = new List<string>();
+                    for (int j = excelWorksheet.Dimension.Start.Column; j <= excelWorksheet.Dimension.End.Column; j++)
+                    {
+                        listRows.Add(excelWorksheet.Cells[i, j].Value.ToString());
+                    }
+                    dataTable.Rows.Add(listRows.ToArray());
+                }
+                dgvSinhVien.DataSource = dataTable;
             }
         }
-
-        // import
-    
         private void btImport_Click(object sender, EventArgs e)
         {
-            /*OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel Files|*.xlsx;*.xls;*.csv";
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Import Excel";
+            openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|Excel 2003 (*.xls)|*.xls";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string excelFilePath = openFileDialog.FileName;
-                ImportDataFromExcel(excelFilePath);
-            }*/
-
-            
-            // cách 2
-            try
-            {
-
-                if (openFD.ShowDialog() == DialogResult.OK)
+                try
                 {
-                  
-                    using (OleDbConnection myConnect = new OleDbConnection(string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 8.0;", openFD.FileName)))
-                    {
-                        openFD.Filter = "Excel Files|*.xlsx;*.xls;*.csv";
-                        DataTable dt = new DataTable();
-                        OleDbDataAdapter cmd = new OleDbDataAdapter("select * from [Sheet1$]", myConnect);
-                        cmd.Fill(dt);
-                        dgvSinhVien.DataSource = dt;
-                    }
+                    ImportExcel(openFileDialog.FileName);
+                    MessageBox.Show("Nhap file thanh cong!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Nhap file khong thanh cong!\n" + ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-        }
-        private void btSave_Click(object sender, EventArgs e)
-        {
-          
-            
         }
 
-        private void btBrowse_Click(object sender, EventArgs e)
-        {
-           /* OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Select File";
-            fdlg.FileName = txtTextbox.Text;
-            fdlg.Filter = "Excel Sheet (*.xlsx)|*.xlsx|All Files(*.*)|*.*";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-            if(fdlg.ShowDialog()== DialogResult.OK)
+
+        // Hàm Tìm kiếm 
+        private void txtFind_TextChanged(object sender, EventArgs e)
+        {          
+            if(txtFind.Text == "")
             {
-                txtTextbox.Text = fdlg.FileName;
-            }*/
+                Form1_Load(sender, e);
+            }
+            else
+            {
+                string query = "Select * from THONGTINSINHVIEN WHERE MaSV Like '%"+ txtFind.Text + "%'";
+                dgvSinhVien.DataSource = modify.Table(query);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+             dgvSinhVien.DataSource = B_SinhVien.GetAllSinhVien();
         }
     }
 }
